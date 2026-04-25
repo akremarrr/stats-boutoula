@@ -2,96 +2,185 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Football Tunisien Pro</title>
+<title>Football Tunisien PRO</title>
 
 <style>
-body { margin:0; font-family:Arial; background:#0b0f1a; color:white; }
-header { background:#111827; padding:15px; text-align:center; }
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #111827, #0b0f1a);
+    color:white;
+}
 
-/* TEAM CARD */
-.team {
+/* HEADER */
+header{
+    padding:20px;
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+    background: linear-gradient(90deg, #d62828, #f77f00);
+    box-shadow:0 4px 15px rgba(0,0,0,0.5);
+}
+
+/* GRID */
+.container{
     display:flex;
-    align-items:center;
-    background:#1f2937;
-    margin:10px auto;
-    padding:10px;
-    width:320px;
+    flex-wrap:wrap;
+    justify-content:center;
+    padding:20px;
+    gap:15px;
+}
+
+/* CARD PRO */
+.card{
+    width:250px;
+    background: rgba(31,41,55,0.9);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:15px;
+    text-align:center;
+    cursor:pointer;
+    transition:0.3s;
+    backdrop-filter: blur(10px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+
+.card:hover{
+    transform: translateY(-8px) scale(1.03);
+    background:#374151;
+}
+
+/* LOGO */
+.card img{
+    width:70px;
+    height:70px;
+    margin-bottom:10px;
+}
+
+/* BUTTON */
+button{
+    padding:10px 15px;
+    border:none;
     border-radius:10px;
     cursor:pointer;
+    background: linear-gradient(90deg, #f77f00, #ffb703);
+    color:black;
+    font-weight:bold;
+    transition:0.3s;
 }
-.team img {
-    width:40px;
-    height:40px;
-    margin-right:10px;
-}
-.team:hover { background:#374151; }
 
-/* PAGE */
-#teamPage {
+button:hover{
+    transform:scale(1.05);
+}
+
+/* TEAM PAGE */
+#teamPage{
     display:none;
     text-align:center;
+    padding:30px;
+    animation: fade 0.4s ease-in;
+}
+
+@keyframes fade{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+#teamPage img{
+    width:120px;
+    margin-top:10px;
+}
+
+h3{
+    margin:10px 0;
+    color:#ffb703;
 }
 </style>
 
 </head>
 <body>
 
-<header>⚽ Football Tunisien</header>
+<header>⚽ Ligue 1 Tunisienne PRO</header>
 
-<div id="teams"></div>
+<!-- LIST -->
+<div id="list" class="container"></div>
 
 <!-- TEAM PAGE -->
 <div id="teamPage">
     <button onclick="back()">⬅ Retour</button>
-    <h2 id="teamName"></h2>
-    <img id="teamLogo" width="80">
-    <p id="teamPoints"></p>
+    <h2 id="name"></h2>
+    <img id="logo">
+    <h3 id="points"></h3>
 </div>
 
 <script>
+
 const teams = [
-    {
-        name:"Espérance",
-        points:60,
-        logo:"https://upload.wikimedia.org/wikipedia/fr/5/5c/Esperance_Tunis_logo.png"
-    },
-    {
-        name:"Étoile du Sahel",
-        points:55,
-        logo:"https://upload.wikimedia.org/wikipedia/fr/6/6d/Etoile_Sportive_du_Sahel.png"
-    }
+{
+name:"Espérance de Tunis",
+points:60,
+logo:"https://upload.wikimedia.org/wikipedia/fr/5/5c/Esperance_Tunis_logo.png"
+},
+{
+name:"Étoile du Sahel",
+points:55,
+logo:"https://upload.wikimedia.org/wikipedia/fr/6/6d/Etoile_Sportive_du_Sahel.png"
+},
+{
+name:"Club Africain",
+points:50,
+logo:"https://upload.wikimedia.org/wikipedia/fr/9/9e/Club_Africain_logo.png"
+},
+{
+name:"CS Sfaxien",
+points:48,
+logo:"https://upload.wikimedia.org/wikipedia/fr/2/2d/CS_Sfaxien_logo.png"
+},
+{
+name:"US Monastir",
+points:45,
+logo:"https://upload.wikimedia.org/wikipedia/fr/3/3a/US_Monastir_logo.png"
+},
+{
+name:"Stade Tunisien",
+points:42,
+logo:"https://upload.wikimedia.org/wikipedia/fr/8/8a/Stade_Tunisien_logo.png"
+}
 ];
 
-// DISPLAY
-function render() {
-    document.getElementById("teams").innerHTML =
-        teams.map(t=>`
-            <div class="team" onclick="openTeam('${t.name}')">
-                <img src="${t.logo}">
-                <div>${t.name} - ${t.points} pts</div>
-            </div>
-        `).join("");
+// RENDER
+function render(){
+document.getElementById("list").innerHTML =
+teams.sort((a,b)=>b.points-a.points)
+.map(t=>`
+<div class="card" onclick="openTeam('${t.name}')">
+<img src="${t.logo}">
+<h3>${t.name}</h3>
+<p>🏆 ${t.points} points</p>
+</div>
+`).join("");
 }
 
-// OPEN PAGE
-function openTeam(name) {
-    let t = teams.find(x=>x.name===name);
+// OPEN TEAM
+function openTeam(name){
+let t = teams.find(x=>x.name===name);
 
-    document.getElementById("teams").style.display="none";
-    document.getElementById("teamPage").style.display="block";
+document.getElementById("list").style.display="none";
+document.getElementById("teamPage").style.display="block";
 
-    document.getElementById("teamName").innerText = t.name;
-    document.getElementById("teamLogo").src = t.logo;
-    document.getElementById("teamPoints").innerText = "Points: " + t.points;
+document.getElementById("name").innerText=t.name;
+document.getElementById("logo").src=t.logo;
+document.getElementById("points").innerText="🏆 "+t.points+" points";
 }
 
 // BACK
-function back() {
-    document.getElementById("teams").style.display="block";
-    document.getElementById("teamPage").style.display="none";
+function back(){
+document.getElementById("list").style.display="flex";
+document.getElementById("teamPage").style.display="none";
 }
 
 render();
+
 </script>
 
 </body>
