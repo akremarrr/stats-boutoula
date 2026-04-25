@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Football Tunisien Pro</title>
+
+<style>
+body { margin:0; font-family:Arial; background:#0b0f1a; color:white; }
+header { background:#111827; padding:15px; text-align:center; }
+
+/* TEAM CARD */
+.team {
+    display:flex;
+    align-items:center;
+    background:#1f2937;
+    margin:10px auto;
+    padding:10px;
+    width:320px;
+    border-radius:10px;
+    cursor:pointer;
+}
+.team img {
+    width:40px;
+    height:40px;
+    margin-right:10px;
+}
+.team:hover { background:#374151; }
+
+/* PAGE */
+#teamPage {
+    display:none;
+    text-align:center;
+}
+</style>
+
+</head>
+<body>
+
+<header>⚽ Football Tunisien</header>
+
+<div id="teams"></div>
+
+<!-- TEAM PAGE -->
+<div id="teamPage">
+    <button onclick="back()">⬅ Retour</button>
+    <h2 id="teamName"></h2>
+    <img id="teamLogo" width="80">
+    <p id="teamPoints"></p>
+</div>
+
+<script>
+const teams = [
+    {
+        name:"Espérance",
+        points:60,
+        logo:"https://upload.wikimedia.org/wikipedia/fr/5/5c/Esperance_Tunis_logo.png"
+    },
+    {
+        name:"Étoile du Sahel",
+        points:55,
+        logo:"https://upload.wikimedia.org/wikipedia/fr/6/6d/Etoile_Sportive_du_Sahel.png"
+    }
+];
+
+// DISPLAY
+function render() {
+    document.getElementById("teams").innerHTML =
+        teams.map(t=>`
+            <div class="team" onclick="openTeam('${t.name}')">
+                <img src="${t.logo}">
+                <div>${t.name} - ${t.points} pts</div>
+            </div>
+        `).join("");
+}
+
+// OPEN PAGE
+function openTeam(name) {
+    let t = teams.find(x=>x.name===name);
+
+    document.getElementById("teams").style.display="none";
+    document.getElementById("teamPage").style.display="block";
+
+    document.getElementById("teamName").innerText = t.name;
+    document.getElementById("teamLogo").src = t.logo;
+    document.getElementById("teamPoints").innerText = "Points: " + t.points;
+}
+
+// BACK
+function back() {
+    document.getElementById("teams").style.display="block";
+    document.getElementById("teamPage").style.display="none";
+}
+
+render();
+</script>
+
+</body>
+</html>
