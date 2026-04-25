@@ -1,185 +1,236 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Football Tunisien PRO</title>
+<title>⚽ Tunisia Football Stats</title>
 
 <style>
-body{
-    margin:0;
-    font-family:'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top, #111827, #0b0f1a);
-    color:white;
+body {
+    font-family: "Tahoma";
+    direction: rtl;
+    background: linear-gradient(135deg, #c1121f, #ffffff);
+    color: #111;
+    text-align: center;
 }
 
-/* HEADER */
-header{
-    padding:20px;
-    text-align:center;
-    font-size:26px;
-    font-weight:bold;
-    background: linear-gradient(90deg, #d62828, #f77f00);
-    box-shadow:0 4px 15px rgba(0,0,0,0.5);
+h1 {
+    background: #c1121f;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
 }
 
-/* GRID */
-.container{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    padding:20px;
-    gap:15px;
+.container {
+    width: 95%;
+    margin: auto;
 }
 
-/* CARD PRO */
-.card{
-    width:250px;
-    background: rgba(31,41,55,0.9);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:16px;
-    padding:15px;
-    text-align:center;
-    cursor:pointer;
-    transition:0.3s;
-    backdrop-filter: blur(10px);
-    box-shadow:0 8px 20px rgba(0,0,0,0.4);
+.card {
+    background: white;
+    padding: 15px;
+    margin: 15px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
-.card:hover{
-    transform: translateY(-8px) scale(1.03);
-    background:#374151;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-/* LOGO */
-.card img{
-    width:70px;
-    height:70px;
-    margin-bottom:10px;
+th {
+    background: #c1121f;
+    color: white;
 }
 
-/* BUTTON */
-button{
-    padding:10px 15px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    background: linear-gradient(90deg, #f77f00, #ffb703);
-    color:black;
-    font-weight:bold;
-    transition:0.3s;
+th, td {
+    padding: 8px;
+    border: 1px solid #ddd;
 }
 
-button:hover{
-    transform:scale(1.05);
+.match {
+    background: #f8f9fa;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
 }
 
-/* TEAM PAGE */
-#teamPage{
-    display:none;
-    text-align:center;
-    padding:30px;
-    animation: fade 0.4s ease-in;
+.player {
+    padding: 8px;
+    margin: 5px;
+    background: #eee;
+    border-radius: 6px;
 }
 
-@keyframes fade{
-    from{opacity:0; transform:translateY(10px);}
-    to{opacity:1; transform:translateY(0);}
+button {
+    background: #c1121f;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 6px;
 }
 
-#teamPage img{
-    width:120px;
-    margin-top:10px;
-}
-
-h3{
-    margin:10px 0;
-    color:#ffb703;
+input {
+    padding: 6px;
+    margin: 5px;
 }
 </style>
-
 </head>
+
 <body>
 
-<header>⚽ Ligue 1 Tunisienne PRO</header>
+<h1>🇹🇳 إحصائيات كرة القدم التونسية</h1>
 
-<!-- LIST -->
-<div id="list" class="container"></div>
+<div class="container">
 
-<!-- TEAM PAGE -->
-<div id="teamPage">
-    <button onclick="back()">⬅ Retour</button>
-    <h2 id="name"></h2>
-    <img id="logo">
-    <h3 id="points"></h3>
+<div class="card">
+<h2>🏆 ترتيب الفرق</h2>
+<table id="teamsTable">
+<thead>
+<tr>
+<th>الفريق</th><th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>نقاط</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>⚽ المباريات</h2>
+<div id="matches"></div>
+<button onclick="addMatch()">➕ إضافة مباراة</button>
+</div>
+
+<div class="card">
+<h2>🧑‍💼 اللاعبين</h2>
+<input id="playerName" placeholder="اسم اللاعب">
+<input id="playerTeam" placeholder="الفريق">
+<button onclick="addPlayer()">إضافة لاعب</button>
+<div id="players"></div>
+</div>
+
 </div>
 
 <script>
 
-const teams = [
-{
-name:"Espérance de Tunis",
-points:60,
-logo:"https://upload.wikimedia.org/wikipedia/fr/5/5c/Esperance_Tunis_logo.png"
-},
-{
-name:"Étoile du Sahel",
-points:55,
-logo:"https://upload.wikimedia.org/wikipedia/fr/6/6d/Etoile_Sportive_du_Sahel.png"
-},
-{
-name:"Club Africain",
-points:50,
-logo:"https://tse3.mm.bing.net/th/id/OIP.AsESpVe_1BKnjiMYMNpYZAHaNK?cb=thfc1&rs=1&pid=ImgDetMain&o=7&rm=3"
-},
-{
-name:"CS Sfaxien",
-points:48,
-logo:"https://upload.wikimedia.org/wikipedia/fr/2/2d/CS_Sfaxien_logo.png"
-},
-{
-name:"US Monastir",
-points:45,
-logo:"https://upload.wikimedia.org/wikipedia/fr/3/3a/US_Monastir_logo.png"
-},
-{
-name:"Stade Tunisien",
-points:42,
-logo:"https://upload.wikimedia.org/wikipedia/fr/8/8a/Stade_Tunisien_logo.png"
-}
+// تحميل أو إنشاء بيانات
+let teams = JSON.parse(localStorage.getItem("teams")) || [
+{name:"الترجي",played:0,wins:0,draws:0,losses:0,points:0},
+{name:"النجم الساحلي",played:0,wins:0,draws:0,losses:0,points:0},
+{name:"النادي الإفريقي",played:0,wins:0,draws:0,losses:0,points:0}
 ];
 
-// RENDER
-function render(){
-document.getElementById("list").innerHTML =
-teams.sort((a,b)=>b.points-a.points)
-.map(t=>`
-<div class="card" onclick="openTeam('${t.name}')">
-<img src="${t.logo}">
-<h3>${t.name}</h3>
-<p>🏆 ${t.points} points</p>
-</div>
-`).join("");
+let matches = JSON.parse(localStorage.getItem("matches")) || [];
+let players = JSON.parse(localStorage.getItem("players")) || [];
+
+// حفظ
+function save() {
+    localStorage.setItem("teams", JSON.stringify(teams));
+    localStorage.setItem("matches", JSON.stringify(matches));
+    localStorage.setItem("players", JSON.stringify(players));
 }
 
-// OPEN TEAM
-function openTeam(name){
-let t = teams.find(x=>x.name===name);
+// عرض الفرق
+function renderTeams() {
+    let tbody = document.querySelector("#teamsTable tbody");
+    tbody.innerHTML = "";
 
-document.getElementById("list").style.display="none";
-document.getElementById("teamPage").style.display="block";
+    teams.sort((a,b)=>b.points-a.points);
 
-document.getElementById("name").innerText=t.name;
-document.getElementById("logo").src=t.logo;
-document.getElementById("points").innerText="🏆 "+t.points+" points";
+    teams.forEach(t=>{
+        tbody.innerHTML += `
+        <tr>
+        <td>${t.name}</td>
+        <td>${t.played}</td>
+        <td>${t.wins}</td>
+        <td>${t.draws}</td>
+        <td>${t.losses}</td>
+        <td>${t.points}</td>
+        </tr>`;
+    });
 }
 
-// BACK
-function back(){
-document.getElementById("list").style.display="flex";
-document.getElementById("teamPage").style.display="none";
+// إضافة مباراة
+function addMatch() {
+    let t1 = teams[Math.floor(Math.random()*teams.length)];
+    let t2 = teams[Math.floor(Math.random()*teams.length)];
+    if(t1==t2) return;
+
+    let s1 = Math.floor(Math.random()*4);
+    let s2 = Math.floor(Math.random()*4);
+
+    let matchPlayers = players.map(p => ({
+        name: p.name,
+        team: p.team,
+        rating: (Math.random()*5+5).toFixed(1)
+    }));
+
+    matches.push({
+        teamA:t1.name, teamB:t2.name,
+        scoreA:s1, scoreB:s2,
+        players: matchPlayers
+    });
+
+    t1.played++; t2.played++;
+
+    if(s1>s2){t1.wins++;t2.losses++;t1.points+=3;}
+    else if(s2>s1){t2.wins++;t1.losses++;t2.points+=3;}
+    else {t1.draws++;t2.draws++;t1.points++;t2.points++;}
+
+    save();
+    renderAll();
 }
 
-render();
+// عرض المباريات
+function renderMatches() {
+    let div = document.getElementById("matches");
+    div.innerHTML = "";
+
+    matches.forEach(m=>{
+        let playersHtml = m.players.map(p =>
+            `<div class="player">${p.name} (${p.team}) ⭐ ${p.rating}</div>`
+        ).join("");
+
+        div.innerHTML += `
+        <div class="match">
+        <b>${m.teamA} ${m.scoreA} - ${m.scoreB} ${m.teamB}</b>
+        ${playersHtml}
+        </div>`;
+    });
+}
+
+// إضافة لاعب
+function addPlayer() {
+    let name = document.getElementById("playerName").value;
+    let team = document.getElementById("playerTeam").value;
+
+    if(!name || !team) return;
+
+    players.push({name, team});
+    save();
+    renderPlayers();
+}
+
+// عرض اللاعبين
+function renderPlayers() {
+    let div = document.getElementById("players");
+    div.innerHTML = "";
+
+    players.forEach(p=>{
+        div.innerHTML += `<div class="player">${p.name} - ${p.team}</div>`;
+    });
+}
+
+// تشغيل
+function renderAll(){
+    renderTeams();
+    renderMatches();
+    renderPlayers();
+}
+
+renderAll();
 
 </script>
 
